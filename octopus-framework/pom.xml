@@ -17,6 +17,7 @@
     <url>http://maven.apache.org</url>
     <modules>
         <module>octopus-common</module>
+        <module>octopus-spring-boot-starter-web</module>
     </modules>
     <dependencies>
         <dependency>

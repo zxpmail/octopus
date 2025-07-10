@@ -1,5 +1,6 @@
 package org.zhouxp.octopus.framework.common.exception;
 
+import lombok.Getter;
 import org.zhouxp.octopus.framework.common.model.enums.CommonResponseEnum;
 import org.zhouxp.octopus.framework.common.model.interfaces.ICommonResponse;
 
@@ -11,6 +12,7 @@ import org.zhouxp.octopus.framework.common.model.interfaces.ICommonResponse;
  *
  * @author zhouxp
  */
+@Getter
 @SuppressWarnings("unused")
 public class BaseException extends RuntimeException{
     /**
