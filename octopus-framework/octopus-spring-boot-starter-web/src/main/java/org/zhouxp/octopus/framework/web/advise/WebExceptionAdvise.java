@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.validation.BindException;
@@ -53,7 +54,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class WebExceptionAdvise {
 
-    private final String module;
+    @Value("${spring.application.name:test}")
+    private  String module;
 
     /**
      * NoHandlerFoundException 404 异常处理
@@ -252,10 +254,10 @@ public class WebExceptionAdvise {
         NoApiResult methodAnnotation = method.getAnnotation(NoApiResult.class);
 
         if (classAnnotation != null && !classAnnotation.value()) {
-            throw e; // 如果类上存在NoApiResult注解且value为false，则抛出异常
+            throw e;
         }
         if (methodAnnotation != null && !methodAnnotation.value()) {
-            throw e; // 如果方法上存在NoApiResult注解且value为false，则抛出异常
+            throw e;
         }
     }
 
