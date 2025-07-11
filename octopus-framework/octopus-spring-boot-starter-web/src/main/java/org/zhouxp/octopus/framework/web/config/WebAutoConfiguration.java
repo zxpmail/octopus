@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.zhouxp.octopus.framework.web.advise.ApiResultWrapperAdvice;
+import org.zhouxp.octopus.framework.web.advise.WebExceptionAdvise;
 import org.zhouxp.octopus.framework.web.properties.WebProperties;
 
 /**
@@ -23,4 +24,11 @@ public class WebAutoConfiguration {
     public ApiResultWrapperAdvice apiResultWrapperAdvice(WebProperties webProperties) {
         return new ApiResultWrapperAdvice(webProperties.getIgnorePackageOrClass());
     }
+
+    @ConditionalOnProperty(name = "octopus.web.exception-enable", havingValue = "true", matchIfMissing = true)
+    @Bean
+    public WebExceptionAdvise exceptionHandler() {
+        return new WebExceptionAdvise();
+    }
+
 }
