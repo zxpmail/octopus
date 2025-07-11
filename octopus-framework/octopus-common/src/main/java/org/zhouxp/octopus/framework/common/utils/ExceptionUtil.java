@@ -1,6 +1,5 @@
 package org.zhouxp.octopus.framework.common.utils;
 
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
  *
  * @author zhouxp
  */
-@Slf4j
+@SuppressWarnings("unused")
 public class ExceptionUtil {
     private ExceptionUtil() {
     }

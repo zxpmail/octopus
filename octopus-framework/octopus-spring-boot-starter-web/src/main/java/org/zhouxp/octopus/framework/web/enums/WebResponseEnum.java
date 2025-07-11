@@ -23,6 +23,7 @@ public enum WebResponseEnum implements ICommonResponse {
     PARAM_ERROR(416, "参数错误"),
     Validation_ERROR(417, "参数验证失败"),
     ;
-    private final int code;
+    private final Integer code;
     private final String message;
+
 }
