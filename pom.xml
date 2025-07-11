@@ -26,6 +26,7 @@
     <modules>
         <module>octopus-dependencies</module>
         <module>octopus-framework</module>
+        <module>octopus-test</module>
     </modules>
     <dependencyManagement>
         <dependencies>

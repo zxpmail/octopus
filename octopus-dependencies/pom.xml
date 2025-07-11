@@ -41,6 +41,11 @@
                 <artifactId>octopus-common</artifactId>
                 <version>${octopus.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.zhouxp.octopus</groupId>
+                <artifactId>octopus-spring-boot-starter-web</artifactId>
+                <version>${octopus.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
