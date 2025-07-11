@@ -13,6 +13,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.zhouxp.octopus.framework.common.model.resp.ApiResult;
 import org.zhouxp.octopus.framework.web.annotations.NoApiResult;
 
+import java.util.List;
+
 /**
  * <p/>
  * {@code @description}  : 统一返回值处理
@@ -26,10 +28,17 @@ public class ApiResultWrapperAdvice implements ResponseBodyAdvice<Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiResultWrapperAdvice.class);
 
+    private final List<String> ignorePackageOrClass;
+
+    public ApiResultWrapperAdvice(List<String> ignorePackageOrClass) {
+        this.ignorePackageOrClass = ignorePackageOrClass;
+    }
+
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return !(returnType.hasMethodAnnotation(NoApiResult.class)
-                || ApiResult.class.isAssignableFrom(returnType.getParameterType()));
+                || ApiResult.class.isAssignableFrom(returnType.getParameterType()))
+                || !ignorePackageOrClass.contains(returnType.getDeclaringClass().getName());
     }
 
     @Override
