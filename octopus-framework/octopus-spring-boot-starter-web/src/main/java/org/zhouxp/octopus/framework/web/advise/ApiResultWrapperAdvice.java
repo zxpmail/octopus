@@ -1,5 +1,6 @@
 package org.zhouxp.octopus.framework.web.advise;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
@@ -27,7 +28,7 @@ import java.util.List;
 public class ApiResultWrapperAdvice implements ResponseBodyAdvice<Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiResultWrapperAdvice.class);
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final List<String> ignorePackageOrClass;
 
     public ApiResultWrapperAdvice(List<String> ignorePackageOrClass) {
@@ -37,8 +38,8 @@ public class ApiResultWrapperAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return !(returnType.hasMethodAnnotation(NoApiResult.class)
-                || ApiResult.class.isAssignableFrom(returnType.getParameterType()))
-                || !ignorePackageOrClass.contains(returnType.getDeclaringClass().getName());
+                || returnType.getParameterType().equals(ApiResult.class)
+                || ignorePackageOrClass.contains(returnType.getDeclaringClass().getName()));
     }
 
     @Override
@@ -48,6 +49,7 @@ public class ApiResultWrapperAdvice implements ResponseBodyAdvice<Object> {
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request,
                                   ServerHttpResponse response) {
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         try {
             if (body == null) {
                 logger.warn("Empty response body detected for request: {} {}", request.getMethod(), request.getURI());
@@ -55,8 +57,7 @@ public class ApiResultWrapperAdvice implements ResponseBodyAdvice<Object> {
             }
 
             if (body instanceof String) {
-                // 不要 toString，交给 Spring 序列化
-                return ApiResult.ok(body);
+                return objectMapper.writeValueAsString(ApiResult.ok(body));
             }
 
             return ApiResult.ok(body);
