@@ -13,6 +13,7 @@
         <spring.boot.version>3.5.3</spring.boot.version>
         <lombok.version>1.18.38</lombok.version>
         <octopus.version>${revision}</octopus.version>
+        <mybatis-plus.version>3.5.12</mybatis-plus.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -30,6 +31,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-validation</artifactId>
                 <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>

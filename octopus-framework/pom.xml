@@ -18,6 +18,7 @@
     <modules>
         <module>octopus-common</module>
         <module>octopus-spring-boot-starter-web</module>
+        <module>octopus-spring-boot-starter-mybatis-plus</module>
     </modules>
     <dependencies>
         <dependency>
