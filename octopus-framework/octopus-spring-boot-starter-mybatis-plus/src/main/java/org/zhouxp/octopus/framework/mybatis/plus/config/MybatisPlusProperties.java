@@ -20,5 +20,5 @@ import java.util.List;
 @ConfigurationProperties(prefix = "octopus.mybatis-plus")
 public class MybatisPlusProperties {
     private List<FillRule> rules;
-
+    private boolean autoFill = true;
 }
