@@ -2,10 +2,6 @@ package org.zhouxp.octopus.framework.mybatis.plus.autofill.enums;
 
 import lombok.Getter;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * <p/>
  * {@code @description}  : 填充模式
@@ -22,23 +18,8 @@ public enum FillMode {
 
     private final int value;
 
-    private static final Map<Integer, FillMode> VALUE_MAP = Stream.of(values())
-            .collect(Collectors.toMap(
-                    FillMode::getValue,
-                    mode -> mode,
-                    (existing, replacement) -> existing
-            ));
-
     FillMode(int value) {
         this.value = value;
-    }
-
-    /**
-     * 根据数值获取枚举实例
-     */
-    public static FillMode fromValue(int value) {
-        FillMode mode = VALUE_MAP.get(value);
-        return mode != null ? mode : BOTH;
     }
 
     /**
