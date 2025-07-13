@@ -1,8 +1,8 @@
 package org.zhouxp.octopus.framework.mybatis.plus.config;
 
-import org.zhouxp.octopus.framework.mybatis.plus.factoy.FillEntityFactory;
-import org.zhouxp.octopus.framework.mybatis.plus.model.FillEntity;
-import org.zhouxp.octopus.framework.mybatis.plus.model.FillRule;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.factoy.FillEntityFactory;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillEntity;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillRule;
 
 import java.util.Collections;
 import java.util.List;

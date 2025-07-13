@@ -3,7 +3,7 @@ package org.zhouxp.octopus.framework.mybatis.plus.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.zhouxp.octopus.framework.mybatis.plus.model.FillRule;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillRule;
 
 import java.util.List;
 

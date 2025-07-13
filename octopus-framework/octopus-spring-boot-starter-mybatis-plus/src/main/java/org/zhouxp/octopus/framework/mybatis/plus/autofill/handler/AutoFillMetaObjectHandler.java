@@ -1,4 +1,4 @@
-package org.zhouxp.octopus.framework.mybatis.plus.handler;
+package org.zhouxp.octopus.framework.mybatis.plus.autofill.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.context.annotation.Primary;
 import org.zhouxp.octopus.framework.mybatis.plus.config.FillConfig;
-import org.zhouxp.octopus.framework.mybatis.plus.model.FillEntity;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillEntity;
 
 /**
  * <p/>

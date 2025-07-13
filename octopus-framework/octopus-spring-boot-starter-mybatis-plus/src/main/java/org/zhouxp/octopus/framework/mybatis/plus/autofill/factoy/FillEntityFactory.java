@@ -1,12 +1,12 @@
-package org.zhouxp.octopus.framework.mybatis.plus.factoy;
+package org.zhouxp.octopus.framework.mybatis.plus.autofill.factoy;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.zhouxp.octopus.framework.common.utils.ConvertUtils;
-import org.zhouxp.octopus.framework.mybatis.plus.enums.FillMode;
-import org.zhouxp.octopus.framework.mybatis.plus.model.FillEntity;
-import org.zhouxp.octopus.framework.mybatis.plus.model.FillRule;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.enums.FillMode;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillEntity;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillRule;
 
 /**
  * <p/>

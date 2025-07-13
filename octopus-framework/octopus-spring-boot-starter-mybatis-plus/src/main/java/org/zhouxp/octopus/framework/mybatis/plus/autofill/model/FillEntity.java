@@ -1,7 +1,7 @@
-package org.zhouxp.octopus.framework.mybatis.plus.model;
+package org.zhouxp.octopus.framework.mybatis.plus.autofill.model;
 
 import lombok.Data;
-import org.zhouxp.octopus.framework.mybatis.plus.enums.FillMode;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.enums.FillMode;
 
 /**
  * <p/>

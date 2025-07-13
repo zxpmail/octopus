@@ -1,4 +1,4 @@
-package org.zhouxp.octopus.framework.mybatis.plus.enums;
+package org.zhouxp.octopus.framework.mybatis.plus.autofill.enums;
 
 import lombok.Getter;
 
