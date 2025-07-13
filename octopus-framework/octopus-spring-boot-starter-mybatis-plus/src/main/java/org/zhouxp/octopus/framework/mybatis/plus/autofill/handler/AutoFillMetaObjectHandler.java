@@ -50,7 +50,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         Object value;
         if (rule.getValueSupplier() != null) {
             // 获取动态值
-            value = rule.getValueSupplier().get();
+            value = rule.getValue();
         } else {
             value = rule.getDefaultValue();
         }

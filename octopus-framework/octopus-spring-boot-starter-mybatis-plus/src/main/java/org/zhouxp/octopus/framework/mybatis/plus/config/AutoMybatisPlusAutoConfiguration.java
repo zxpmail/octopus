@@ -22,5 +22,4 @@ public class AutoMybatisPlusAutoConfiguration {
     public AutoFillMetaObjectHandler autoFillMetaObjectHandler(MybatisPlusProperties properties) {
         return new AutoFillMetaObjectHandler(properties.getRules());
     }
-
 }
