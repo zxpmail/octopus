@@ -1,7 +1,6 @@
 package org.zhouxp.octopus.framework.mybatis.plus.autofill.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.context.annotation.Primary;
 import org.zhouxp.octopus.framework.mybatis.plus.autofill.factoy.FillEntityFactory;
@@ -18,7 +17,6 @@ import java.util.List;
  *
  * @author zhouxp
  */
-@Slf4j
 @Primary
 public class AutoFillMetaObjectHandler implements MetaObjectHandler {
     private final List<FillEntity> rules;
@@ -47,13 +45,8 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
     private void setFieldValue(MetaObject metaObject, FillEntity rule) {
         String fieldName = rule.getFieldName();
-        Object value;
-        if (rule.getValueSupplier() != null) {
-            // 获取动态值
-            value = rule.getValue();
-        } else {
-            value = rule.getDefaultValue();
-        }
+        // 获取动态值
+        Object value = rule.getValue();
         if (value != null && metaObject.hasSetter(fieldName)) {
             metaObject.setValue(fieldName, value);
         }
