@@ -32,9 +32,7 @@ public class FillEntityFactory {
     public static FillEntity create(FillRule rule) {
         Function<HttpServletRequest, Object> supplier = null;
 
-        if (rule.getSourceType() == null) {
-            supplier = req -> getDefaultByRule(rule);
-        } else if ("header".equalsIgnoreCase(rule.getSourceType())) {
+        if ("header".equalsIgnoreCase(rule.getSourceType())) {
             supplier = req -> req.getHeader(rule.getSourceKey());
         } else if ("param".equalsIgnoreCase(rule.getSourceType())) {
             supplier = req -> req.getParameter(rule.getSourceKey());
@@ -42,17 +40,16 @@ public class FillEntityFactory {
             supplier = req -> getDefaultByRule(rule);
         }
 
-        boolean insertOnly = rule.getInsertOnly() != null && rule.getInsertOnly();
-        boolean updateOnly = rule.getUpdateOnly() != null && rule.getUpdateOnly();
-
+        // 默认两者都填充
+        int mode = rule.getMode() != null ? rule.getMode() : 3;
         return new FillEntity(
                 rule.getFieldName(),
                 TYPE_MAP.getOrDefault(rule.getFieldType(), Object.class),
-                insertOnly,
-                updateOnly,
+                mode,
                 supplier
         );
     }
+
 
     private static Object getDefaultByRule(FillRule rule) {
         String defaultValue = rule.getDefaultValue();

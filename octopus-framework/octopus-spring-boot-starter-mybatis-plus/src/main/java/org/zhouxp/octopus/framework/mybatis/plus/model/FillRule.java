@@ -21,13 +21,9 @@ public class FillRule {
      */
     private String fieldType;
     /**
-     * 插入时填充
+     * 填充模式 1: insert, 2: update, 3: both
      */
-    private Boolean insertOnly;
-    /**
-     * 更新时填充
-     */
-    private Boolean updateOnly;
+    private Integer mode;
     /**
      * 填充数据源类型 header / param / default
      */

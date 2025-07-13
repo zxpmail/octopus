@@ -19,7 +19,15 @@ import java.util.function.Function;
 public class FillEntity {
     private String fieldName;
     private Class<?> fieldType;
-    private Boolean insertOnly;
-    private Boolean updateOnly;
+    private Integer mode;
     private Function<HttpServletRequest, Object> valueSupplier;
+
+    public boolean shouldFill(boolean isInsert) {
+        if (isInsert) {
+            return mode == 1 || mode == 3;
+        } else {
+            return mode == 2 || mode == 3;
+        }
+    }
+
 }
