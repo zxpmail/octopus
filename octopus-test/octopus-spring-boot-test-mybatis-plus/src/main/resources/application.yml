@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: mybatis-plus
+  mvc:
+    path-match:
+      matching-strategy: ANT_PATH_MATCHER
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
+    username: root
+    password: 123456
+  jackson:
+    time-zone: GMT+8
+octopus:
+  mybatis-plus:
+    auto-fill: true
+    rules:
+      - field-name: creator
+        field-type: java.lang.String
+        source-key: X-User
+        default-value: anonymous
+
+      - field-name: status
+        field-type: java.lang.Integer
+        source-key: status
+        default-value: 0
+
+      - field-name: createTime
+        field-type: java.time.LocalDateTime
+
+      - field-name: updateTime
+        field-type: java.time.LocalDateTime

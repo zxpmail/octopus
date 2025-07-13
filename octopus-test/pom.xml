@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>octopus-spring-boot-test-web</module>
+        <module>octopus-spring-boot-test-mybatis-plus</module>
     </modules>
     <dependencies>
 
