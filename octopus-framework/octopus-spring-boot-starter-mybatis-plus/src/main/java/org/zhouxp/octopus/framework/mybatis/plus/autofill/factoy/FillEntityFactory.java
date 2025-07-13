@@ -4,9 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.zhouxp.octopus.framework.common.utils.ConvertUtils;
-import org.zhouxp.octopus.framework.mybatis.plus.autofill.enums.FillMode;
 import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillEntity;
 import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillRule;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.provider.HeaderSourceProvider;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.provider.ParamSourceProvider;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.provider.SourceProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p/>
@@ -18,48 +23,52 @@ import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillRule;
  */
 public class FillEntityFactory {
 
-    public static FillEntity create(FillRule rule) {
-        String fieldName = rule.getFieldName();
-        Class<?> fieldType = ConvertUtils.getClassByName(rule.getFieldType());
-        FillMode mode = rule.getMode();
+    private static final SourceProvider HEADER_PROVIDER = new HeaderSourceProvider();
+    private static final SourceProvider PARAM_PROVIDER = new ParamSourceProvider();
 
-        String sourceKey = rule.getSourceKey();
-        String defaultValueStr = rule.getDefaultValue();
-        // 默认值兜底
-        Object result = ConvertUtils.convert(fieldType, defaultValueStr);
+    public static List<FillEntity> createAll(List<FillRule> rules) {
+        List<FillEntity> result = new ArrayList<>();
 
-        try {
-            var request = getCurrentRequest();
-            if (request != null) {
-                // 1. 先尝试从 header 获取
-                String headerValue = request.getHeader(sourceKey);
-                if (headerValue != null && !headerValue.isEmpty()) {
-                    Object value = ConvertUtils.convert(fieldType, headerValue);
-                    if (value != null) {
-                        result = value;
-                    }
-                    return new FillEntity(fieldName, fieldType, result, mode);
-                }
-
-                // 2. header 没有，尝试从 param 获取
-                String paramValue = request.getParameter(sourceKey);
-                if (paramValue != null && !paramValue.isEmpty()) {
-                    Object value = ConvertUtils.convert(fieldType, paramValue);
-                    if (value != null) {
-                        result = value;
-                    }
-                }
-            }
-        } catch (Exception ignore) {
-            // 忽略异常，使用默认值
+        for (FillRule rule : rules) {
+            result.add(create(rule));
         }
 
-        return new FillEntity(fieldName, fieldType, result, mode);
+        return result;
     }
+
+    public static FillEntity create(FillRule rule) {
+        String sourceKey = rule.getSourceKey();
+        String defaultVal = rule.getDefaultValue();
+        Class<?> type = ConvertUtils.getClassByName(rule.getFieldType());
+
+        Object value = ConvertUtils.convert(type, defaultVal);
+
+        HttpServletRequest request = getCurrentRequest();
+        if (request != null) {
+            String val = HEADER_PROVIDER.getValue(request, sourceKey);
+            if (val == null || val.isEmpty()) {
+                val = PARAM_PROVIDER.getValue(request, sourceKey);
+            }
+            if (val != null && !val.isEmpty()) {
+                Object converted = ConvertUtils.convert(type, val);
+                if (converted != null) {
+                    value = converted;
+                }
+            }
+        }
+
+        return new FillEntity(
+                rule.getFieldName(),
+                type,
+                value,
+                rule.getMode()
+        );
+    }
+
     private static HttpServletRequest getCurrentRequest() {
         try {
-            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            return attributes != null ? attributes.getRequest() : null;
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            return attr != null ? attr.getRequest() : null;
         } catch (Exception e) {
             return null;
         }
