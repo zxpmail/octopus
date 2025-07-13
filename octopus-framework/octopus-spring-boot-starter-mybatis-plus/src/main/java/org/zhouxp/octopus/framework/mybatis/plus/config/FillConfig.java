@@ -6,7 +6,6 @@ import org.zhouxp.octopus.framework.mybatis.plus.model.FillRule;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -19,16 +18,17 @@ import java.util.stream.Collectors;
  */
 public class FillConfig {
 
-    private final List<FillEntity> fillRules;
+    private List<FillEntity> fillRules = Collections.emptyList();
 
     public FillConfig(MybatisPlusProperties mybatisPlusProperties) {
-        List<FillRule> rules = mybatisPlusProperties.getRules();
-        this.fillRules = Optional.ofNullable(rules)
-                .filter(r -> !r.isEmpty())
-                .map(rs -> rs.stream()
-                        .map(FillEntityFactory::create)
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+        List<FillRule> rules =mybatisPlusProperties.getRules();
+        if (rules != null && !rules.isEmpty()) {
+            this.fillRules = rules.stream()
+                    .map(FillEntityFactory::create)
+                    .collect(Collectors.toList());
+        } else {
+            this.fillRules = Collections.emptyList();
+        }
     }
 
     public List<FillEntity> getFillRules() {
