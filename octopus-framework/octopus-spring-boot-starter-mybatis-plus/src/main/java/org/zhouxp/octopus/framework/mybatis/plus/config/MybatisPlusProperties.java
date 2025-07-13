@@ -1,5 +1,7 @@
 package org.zhouxp.octopus.framework.mybatis.plus.config;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.zhouxp.octopus.framework.mybatis.plus.model.FillRule;
 
@@ -13,15 +15,10 @@ import java.util.List;
  *
  * @author zhouxp
  */
+@Setter
+@Getter
 @ConfigurationProperties(prefix = "octopus.mybatis-plus")
 public class MybatisPlusProperties {
     private List<FillRule> rules;
 
-    public List<FillRule> getRules() {
-        return rules;
-    }
-
-    public void setRules(List<FillRule> rules) {
-        this.rules = rules;
-    }
 }

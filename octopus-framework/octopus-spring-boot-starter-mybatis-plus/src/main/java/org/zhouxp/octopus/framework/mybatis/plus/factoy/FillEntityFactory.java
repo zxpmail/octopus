@@ -32,7 +32,9 @@ public class FillEntityFactory {
     public static FillEntity create(FillRule rule) {
         Function<HttpServletRequest, Object> supplier = null;
 
-        if ("header".equalsIgnoreCase(rule.getSourceType())) {
+        if (rule.getSourceType() == null) {
+            supplier = req -> getDefaultByRule(rule);
+        } else if ("header".equalsIgnoreCase(rule.getSourceType())) {
             supplier = req -> req.getHeader(rule.getSourceKey());
         } else if ("param".equalsIgnoreCase(rule.getSourceType())) {
             supplier = req -> req.getParameter(rule.getSourceKey());
