@@ -52,6 +52,11 @@
                 <artifactId>octopus-spring-boot-starter-web</artifactId>
                 <version>${octopus.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.zhouxp.octopus</groupId>
+                <artifactId>octopus-spring-boot-starter-mybatis-plus</artifactId>
+                <version>${octopus.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
