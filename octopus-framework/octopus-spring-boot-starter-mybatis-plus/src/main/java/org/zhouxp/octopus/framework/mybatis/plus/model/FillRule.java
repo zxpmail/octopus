@@ -1,4 +1,4 @@
-package org.zhouxp.octopus.framework.mybatis.plus.handler.model;
+package org.zhouxp.octopus.framework.mybatis.plus.model;
 
 import lombok.Data;
 
