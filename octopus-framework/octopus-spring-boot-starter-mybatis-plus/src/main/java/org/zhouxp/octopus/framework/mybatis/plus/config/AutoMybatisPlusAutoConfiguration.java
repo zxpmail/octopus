@@ -15,14 +15,15 @@ import org.zhouxp.octopus.framework.mybatis.plus.handler.AutoFillMetaObjectHandl
  * @author zhouxp
  */
 @Configuration
-@ConditionalOnProperty(prefix = "auto-fill", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(MybatisPlusProperties.class)
 public class AutoMybatisPlusAutoConfiguration {
+    @ConditionalOnProperty(prefix = "octopus.mybatis-plus", name = "enabled", havingValue = "true", matchIfMissing = true)
     @Bean
     public AutoFillMetaObjectHandler autoFillMetaObjectHandler(FillConfig fillConfig) {
         return new AutoFillMetaObjectHandler(fillConfig);
     }
 
+    @ConditionalOnProperty(prefix = "octopus.mybatis-plus", name = "enabled", havingValue = "true", matchIfMissing = true)
     @Bean
     public FillConfig fillConfig(MybatisPlusProperties properties) {
         return new FillConfig(properties);
