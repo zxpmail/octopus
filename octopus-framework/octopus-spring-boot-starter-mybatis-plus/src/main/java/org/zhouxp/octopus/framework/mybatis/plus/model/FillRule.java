@@ -1,6 +1,8 @@
 package org.zhouxp.octopus.framework.mybatis.plus.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.zhouxp.octopus.framework.mybatis.plus.enums.FillMode;
 
 /**
  * <p/>
@@ -21,13 +23,10 @@ public class FillRule {
      */
     private String fieldType;
     /**
-     * 填充模式 1: insert, 2: update, 3: both
+     * 填充模式  INSERT, UPDATE, BOTH
      */
-    private Integer mode;
-    /**
-     * 填充数据源类型 header / param / default
-     */
-    private String sourceType;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private FillMode mode;;
     /**
      * 填充数据源字段名  如 userID
      */

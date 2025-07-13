@@ -26,8 +26,6 @@ public class FillConfig {
             this.fillRules = rules.stream()
                     .map(FillEntityFactory::create)
                     .collect(Collectors.toList());
-        } else {
-            this.fillRules = Collections.emptyList();
         }
     }
 

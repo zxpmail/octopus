@@ -1,10 +1,7 @@
 package org.zhouxp.octopus.framework.mybatis.plus.model;
 
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.function.Function;
+import org.zhouxp.octopus.framework.mybatis.plus.enums.FillMode;
 
 /**
  * <p/>
@@ -15,19 +12,21 @@ import java.util.function.Function;
  * @author zhouxp
  */
 @Data
-@AllArgsConstructor
 public class FillEntity {
     private String fieldName;
     private Class<?> fieldType;
-    private Integer mode;
-    private Function<HttpServletRequest, Object> valueSupplier;
+    private FillMode mode;;
+    private final Object defaultValue;
+
+    public FillEntity(String fieldName, Class<?> fieldType, Object defaultValue, FillMode mode) {
+        this.fieldName = fieldName;
+        this.fieldType = fieldType;
+        this.defaultValue = defaultValue;
+        this.mode = mode != null ? mode : FillMode.BOTH;
+    }
 
     public boolean shouldFill(boolean isInsert) {
-        if (isInsert) {
-            return mode == 1 || mode == 3;
-        } else {
-            return mode == 2 || mode == 3;
-        }
+        return isInsert ? mode.shouldInsert() : mode.shouldUpdate();
     }
 
 }

@@ -1,14 +1,12 @@
 package org.zhouxp.octopus.framework.mybatis.plus.factoy;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.zhouxp.octopus.framework.common.utils.ConvertUtils;
+import org.zhouxp.octopus.framework.mybatis.plus.enums.FillMode;
 import org.zhouxp.octopus.framework.mybatis.plus.model.FillEntity;
 import org.zhouxp.octopus.framework.mybatis.plus.model.FillRule;
-
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 
 /**
  * <p/>
@@ -19,70 +17,51 @@ import java.util.function.Function;
  * @author zhouxp
  */
 public class FillEntityFactory {
-    private static final Map<String, Class<?>> TYPE_MAP = new HashMap<>();
-
-    static {
-        TYPE_MAP.put("java.lang.String", String.class);
-        TYPE_MAP.put("java.util.Date", Date.class);
-        TYPE_MAP.put("java.time.LocalDateTime", LocalDateTime.class);
-        TYPE_MAP.put("java.lang.Long", Long.class);
-        TYPE_MAP.put("java.lang.Integer", Integer.class);
-    }
 
     public static FillEntity create(FillRule rule) {
-        Function<HttpServletRequest, Object> supplier = null;
+        String fieldName = rule.getFieldName();
+        Class<?> fieldType = ConvertUtils.getClassByName(rule.getFieldType());
+        FillMode mode = rule.getMode();
 
-        if ("header".equalsIgnoreCase(rule.getSourceType())) {
-            supplier = req -> req.getHeader(rule.getSourceKey());
-        } else if ("param".equalsIgnoreCase(rule.getSourceType())) {
-            supplier = req -> req.getParameter(rule.getSourceKey());
-        } else {
-            supplier = req -> getDefaultByRule(rule);
-        }
-
-        // 默认两者都填充
-        int mode = rule.getMode() != null ? rule.getMode() : 3;
-        return new FillEntity(
-                rule.getFieldName(),
-                TYPE_MAP.getOrDefault(rule.getFieldType(), Object.class),
-                mode,
-                supplier
-        );
-    }
-
-
-    private static Object getDefaultByRule(FillRule rule) {
-        String defaultValue = rule.getDefaultValue();
-        if (defaultValue == null || defaultValue.trim().isEmpty()) {
-            return getDefaultByType(rule.getFieldType());
-        }
+        String sourceKey = rule.getSourceKey();
+        String defaultValueStr = rule.getDefaultValue();
+        // 默认值兜底
+        Object result = ConvertUtils.convert(fieldType, defaultValueStr);
 
         try {
-            if ("java.util.Date".equals(rule.getFieldType())) {
-                return new Date();
-            } else if ("java.time.LocalDateTime".equals(rule.getFieldType())) {
-                return LocalDateTime.now();
-            } else if ("java.lang.Long".equals(rule.getFieldType())) {
-                return Long.valueOf(defaultValue);
-            } else if ("java.lang.Integer".equals(rule.getFieldType())) {
-                return Integer.valueOf(defaultValue);
-            } else if ("java.lang.String".equals(rule.getFieldType())) {
-                return defaultValue;
-            }
-            return null;
-        } catch (Exception e) {
-            return getDefaultByType(rule.getFieldType());
-        }
-    }
+            var request = getCurrentRequest();
+            if (request != null) {
+                // 1. 先尝试从 header 获取
+                String headerValue = request.getHeader(sourceKey);
+                if (headerValue != null && !headerValue.isEmpty()) {
+                    Object value = ConvertUtils.convert(fieldType, headerValue);
+                    if (value != null) {
+                        result = value;
+                    }
+                    return new FillEntity(fieldName, fieldType, result, mode);
+                }
 
-    private static Object getDefaultByType(String fieldType) {
-        return switch (fieldType) {
-            case "java.util.Date" -> new Date();
-            case "java.time.LocalDateTime" -> LocalDateTime.now();
-            case "java.lang.Long" -> 0L;
-            case "java.lang.String" -> "system";
-            case "java.lang.Integer" -> 0;
-            default -> null;
-        };
+                // 2. header 没有，尝试从 param 获取
+                String paramValue = request.getParameter(sourceKey);
+                if (paramValue != null && !paramValue.isEmpty()) {
+                    Object value = ConvertUtils.convert(fieldType, paramValue);
+                    if (value != null) {
+                        result = value;
+                    }
+                }
+            }
+        } catch (Exception ignore) {
+            // 忽略异常，使用默认值
+        }
+
+        return new FillEntity(fieldName, fieldType, result, mode);
+    }
+    private static HttpServletRequest getCurrentRequest() {
+        try {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            return attributes != null ? attributes.getRequest() : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
