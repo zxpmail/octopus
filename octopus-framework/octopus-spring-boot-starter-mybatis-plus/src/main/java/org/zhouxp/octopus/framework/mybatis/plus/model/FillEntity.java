@@ -1,7 +1,10 @@
 package org.zhouxp.octopus.framework.mybatis.plus.model;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.function.Function;
 
 /**
  * <p/>
