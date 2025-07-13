@@ -26,7 +26,7 @@ public class FillRule {
      * 填充模式  INSERT, UPDATE, BOTH
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private FillMode mode;;
+    private FillMode mode;
     /**
      * 填充数据源字段名  如 userID
      */

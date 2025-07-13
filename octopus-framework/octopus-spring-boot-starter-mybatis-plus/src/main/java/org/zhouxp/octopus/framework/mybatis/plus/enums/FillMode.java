@@ -1,5 +1,7 @@
 package org.zhouxp.octopus.framework.mybatis.plus.enums;
 
+import lombok.Getter;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,6 +14,7 @@ import java.util.stream.Stream;
  *
  * @author zhouxp
  */
+@Getter
 public enum FillMode {
     INSERT(1),
     UPDATE(2),
@@ -28,10 +31,6 @@ public enum FillMode {
 
     FillMode(int value) {
         this.value = value;
-    }
-
-    public int getValue() {
-        return value;
     }
 
     /**

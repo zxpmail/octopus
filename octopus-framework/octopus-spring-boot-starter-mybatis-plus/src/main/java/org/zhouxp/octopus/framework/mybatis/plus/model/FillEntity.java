@@ -15,7 +15,7 @@ import org.zhouxp.octopus.framework.mybatis.plus.enums.FillMode;
 public class FillEntity {
     private String fieldName;
     private Class<?> fieldType;
-    private FillMode mode;;
+    private FillMode mode;
     private final Object defaultValue;
 
     public FillEntity(String fieldName, Class<?> fieldType, Object defaultValue, FillMode mode) {
