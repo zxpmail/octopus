@@ -1,7 +1,10 @@
 package org.zhouxp.octopus.framework.common.utils;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 /**
  * <p/>
  * {@code @description}  :
@@ -21,6 +24,8 @@ public class ConvertUtils {
             throw new RuntimeException("无法找到类: " + className, e);
         }
     }
+
+    private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT_THREAD_LOCAL = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
     /**
      * 将字符串值转换为目标类型
@@ -55,8 +60,14 @@ public class ConvertUtils {
             } else if (targetType == Float.class || targetType == float.class) {
                 return Float.valueOf(value);
 
+            } else if (targetType == BigDecimal.class) {
+                return new BigDecimal(value);
+
+            } else if (targetType == BigInteger.class) {
+                return new BigInteger(value);
+
             } else if (targetType == Date.class) {
-                return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value);
+                return DATE_FORMAT_THREAD_LOCAL.get().parse(value);
 
             } else if (targetType == java.time.LocalDateTime.class) {
                 return java.time.LocalDateTime.parse(value);
