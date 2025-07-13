@@ -1,12 +1,10 @@
 package org.zhouxp.octopus.framework.mybatis.plus.config;
 
-import org.zhouxp.octopus.framework.mybatis.plus.autofill.factoy.FillEntityFactory;
 import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillEntity;
 import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillRule;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p/>
@@ -22,11 +20,7 @@ public class FillConfig {
 
     public FillConfig(MybatisPlusProperties mybatisPlusProperties) {
         List<FillRule> rules =mybatisPlusProperties.getRules();
-        if (rules != null && !rules.isEmpty()) {
-            this.fillRules = rules.stream()
-                    .map(FillEntityFactory::create)
-                    .collect(Collectors.toList());
-        }
+
     }
 
     public List<FillEntity> getFillRules() {

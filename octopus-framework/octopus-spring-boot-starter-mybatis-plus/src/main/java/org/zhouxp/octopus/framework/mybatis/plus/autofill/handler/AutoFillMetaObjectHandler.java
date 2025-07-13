@@ -1,12 +1,14 @@
 package org.zhouxp.octopus.framework.mybatis.plus.autofill.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.context.annotation.Primary;
-import org.zhouxp.octopus.framework.mybatis.plus.config.FillConfig;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.factoy.FillEntityFactory;
 import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillEntity;
+import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillRule;
+
+import java.util.List;
 
 /**
  * <p/>
@@ -17,10 +19,14 @@ import org.zhouxp.octopus.framework.mybatis.plus.autofill.model.FillEntity;
  * @author zhouxp
  */
 @Slf4j
-@RequiredArgsConstructor
 @Primary
 public class AutoFillMetaObjectHandler implements MetaObjectHandler {
-    private final FillConfig fillConfig;
+    private final List<FillEntity> rules;
+
+    public AutoFillMetaObjectHandler(List<FillRule> fillRules) {
+        this.rules = FillEntityFactory.createAll(fillRules);
+    }
+
     @Override
     public void insertFill(MetaObject metaObject) {
         handleFill(metaObject, true);
@@ -32,7 +38,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
     }
 
     private void handleFill(MetaObject metaObject, boolean isInsert) {
-        for (var rule : fillConfig.getFillRules()) {
+        for (FillEntity rule : rules) {
             if (rule.shouldFill(isInsert)) {
                 setFieldValue(metaObject, rule);
             }
@@ -41,8 +47,13 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
     private void setFieldValue(MetaObject metaObject, FillEntity rule) {
         String fieldName = rule.getFieldName();
-        Object value = rule.getDefaultValue();
-
+        Object value;
+        if (rule.getValueSupplier() != null) {
+            // 获取动态值
+            value = rule.getValueSupplier().get();
+        } else {
+            value = rule.getDefaultValue();
+        }
         if (value != null && metaObject.hasSetter(fieldName)) {
             metaObject.setValue(fieldName, value);
         }

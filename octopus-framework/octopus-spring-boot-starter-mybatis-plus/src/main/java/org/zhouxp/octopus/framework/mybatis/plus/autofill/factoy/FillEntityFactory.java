@@ -10,12 +10,15 @@ import org.zhouxp.octopus.framework.mybatis.plus.autofill.provider.HeaderSourceP
 import org.zhouxp.octopus.framework.mybatis.plus.autofill.provider.ParamSourceProvider;
 import org.zhouxp.octopus.framework.mybatis.plus.autofill.provider.SourceProvider;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * <p/>
- * {@code @description}  :
+ * {@code @description}  : 填充实体工厂类
  * <p/>
  * <b>@create:</b> 2025-07-13 10:13:19
  *
@@ -41,18 +44,30 @@ public class FillEntityFactory {
         String defaultVal = rule.getDefaultValue();
         Class<?> type = ConvertUtils.getClassByName(rule.getFieldType());
 
-        Object value = ConvertUtils.convert(type, defaultVal);
+        Object defaultValue = ConvertUtils.convert(type, defaultVal);
+        Supplier<Object> valueSupplier = null;
 
-        HttpServletRequest request = getCurrentRequest();
-        if (request != null) {
-            String val = HEADER_PROVIDER.getValue(request, sourceKey);
-            if (val == null || val.isEmpty()) {
-                val = PARAM_PROVIDER.getValue(request, sourceKey);
-            }
-            if (val != null && !val.isEmpty()) {
-                Object converted = ConvertUtils.convert(type, val);
-                if (converted != null) {
-                    value = converted;
+        // 如果是时间类型字段，直接用当前时间作为 supplier
+        if (type == Date.class || type == LocalDateTime.class) {
+            valueSupplier = () -> {
+                if (type == Date.class) {
+                    return new Date();
+                } else {
+                    return LocalDateTime.now();
+                }
+            };
+        } else {
+            HttpServletRequest request = getCurrentRequest();
+            if (request != null) {
+                String val = HEADER_PROVIDER.getValue(request, sourceKey);
+                if (val == null || val.isEmpty()) {
+                    val = PARAM_PROVIDER.getValue(request, sourceKey);
+                }
+                if (val != null && !val.isEmpty()) {
+                    Object converted = ConvertUtils.convert(type, val);
+                    if (converted != null) {
+                        defaultValue = converted;
+                    }
                 }
             }
         }
@@ -60,7 +75,8 @@ public class FillEntityFactory {
         return new FillEntity(
                 rule.getFieldName(),
                 type,
-                value,
+                defaultValue,
+                valueSupplier,
                 rule.getMode()
         );
     }

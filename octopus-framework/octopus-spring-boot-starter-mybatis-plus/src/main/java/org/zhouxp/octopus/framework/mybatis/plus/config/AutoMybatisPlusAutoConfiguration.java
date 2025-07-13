@@ -19,13 +19,8 @@ import org.zhouxp.octopus.framework.mybatis.plus.autofill.handler.AutoFillMetaOb
 public class AutoMybatisPlusAutoConfiguration {
     @ConditionalOnProperty(prefix = "octopus.mybatis-plus", name = "enabled", havingValue = "true", matchIfMissing = true)
     @Bean
-    public AutoFillMetaObjectHandler autoFillMetaObjectHandler(FillConfig fillConfig) {
-        return new AutoFillMetaObjectHandler(fillConfig);
+    public AutoFillMetaObjectHandler autoFillMetaObjectHandler(MybatisPlusProperties properties) {
+        return new AutoFillMetaObjectHandler(properties.getRules());
     }
 
-    @ConditionalOnProperty(prefix = "octopus.mybatis-plus", name = "enabled", havingValue = "true", matchIfMissing = true)
-    @Bean
-    public FillConfig fillConfig(MybatisPlusProperties properties) {
-        return new FillConfig(properties);
-    }
 }
