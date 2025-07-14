@@ -23,7 +23,7 @@ octopus:
       - field-name: status
         field-type: java.lang.Integer
         source-key: status
-        default-value: 0
+        default-value: '0'
 
       - field-name: createTime
         field-type: java.time.LocalDateTime
