@@ -21,4 +21,14 @@ import java.util.List;
 public class MybatisPlusProperties {
     private List<FillRule> rules;
     private boolean autoFill = true;
+
+    /**
+     * 启动getOne拦截器
+     */
+    private Boolean getOneEnable ;
+
+    /**
+     * getOne在wrapper中增加last(" LIMIT 1 ")
+     */
+    private String limitSql =" LIMIT 1 ";
 }
