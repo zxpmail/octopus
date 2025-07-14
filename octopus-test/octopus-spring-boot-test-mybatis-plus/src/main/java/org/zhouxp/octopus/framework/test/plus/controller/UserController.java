@@ -1,5 +1,6 @@
 package org.zhouxp.octopus.framework.test.plus.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.zhouxp.octopus.framework.test.plus.model.User;
@@ -40,6 +41,13 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public Boolean delete(@PathVariable Long id){
         return userService.removeById(id);
+    }
+
+    @GetMapping("/getOne")
+    public User getOne(){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.last(" LIMIT 1 ");
+        return userService.getOne( queryWrapper);
     }
 
 }

@@ -8,9 +8,11 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
+import java.util.Arrays;
+
 /**
  * <p/>
- * {@code @description}  :
+ * {@code @description}  : GetOne Aop
  * <p/>
  * <b>@create:</b> 2025-07-14 16:39:55
  *
@@ -27,20 +29,23 @@ public class GetOneAspect {
 
     @Around("execution(* com.baomidou.mybatisplus.core.mapper.*.selectOne(..))")
     public Object addGetOneParam(ProceedingJoinPoint joinPoint) throws Throwable {
-        Wrapper<?> wrapper;
         Object[] originalArgs = joinPoint.getArgs();
         try {
             if (originalArgs == null || originalArgs.length == 0) {
-                log.error("Arguments are null or empty");
-                return joinPoint.proceed(originalArgs);
+                QueryWrapper<?> wrapper = new QueryWrapper<>();
+                wrapper.last(limitSql);
+                return joinPoint.proceed(new Object[]{wrapper});
             }
 
-            if (!(originalArgs[0] instanceof Wrapper)) {
-                log.error("First argument is not a Wrapper");
+            if (!(originalArgs[0] instanceof Wrapper<?> wrapper)) {
+                QueryWrapper<?> wrapper = new QueryWrapper<>();
+                wrapper.last(limitSql);
+                originalArgs[0]=wrapper;
                 return joinPoint.proceed(originalArgs);
             }
-
-            wrapper = (Wrapper<?>) originalArgs[0];
+            if (wrapper.getTargetSql().toLowerCase().contains(limitSql.toLowerCase())) {
+                return joinPoint.proceed();
+            }
             if (wrapper instanceof QueryWrapper) {
                 ((QueryWrapper<?>) wrapper).last(limitSql);
             } else if (wrapper instanceof LambdaQueryWrapper) {
@@ -49,14 +54,16 @@ public class GetOneAspect {
                 wrapper = new LambdaQueryWrapper<>();
                 ((LambdaQueryWrapper<?>) wrapper).last(limitSql);
             }
-            originalArgs[0] = wrapper;
+            Object[] newArgs = Arrays.copyOf(originalArgs, originalArgs.length);
+            newArgs[0] = wrapper;
+            return joinPoint.proceed(newArgs);
         } catch (Exception e) {
             if (limitSql != null) {
-                log.error("params error:{}", limitSql, e);
+                log.error("Error adding limitSql: {}", limitSql, e);
             } else {
-                log.error("params error with null limitSql", e);
+                log.error("Error with null limitSql", e);
             }
+            throw new RuntimeException("Failed to process selectOne with limitSql", e);
         }
-        return joinPoint.proceed(originalArgs);
     }
 }
