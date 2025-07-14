@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.zhouxp.octopus.framework.mybatis.plus.aspect.GetOneAspect;
 import org.zhouxp.octopus.framework.mybatis.plus.autofill.handler.AutoFillMetaObjectHandler;
 import org.zhouxp.octopus.framework.mybatis.plus.interceptor.RequestInterceptor;
 
@@ -29,5 +30,11 @@ public class AutoMybatisPlusAutoConfiguration  implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new RequestInterceptor());
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "octopus.mybatis-plus.get-one-enable", havingValue = "true", matchIfMissing = true)
+    public GetOneAspect getOneAspect(MybatisPlusProperties mybatisPlusConfigProperties){
+        return new GetOneAspect(mybatisPlusConfigProperties.getLimitSql());
     }
 }
