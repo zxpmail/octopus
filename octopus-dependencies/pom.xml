@@ -14,9 +14,22 @@
         <lombok.version>1.18.38</lombok.version>
         <octopus.version>${revision}</octopus.version>
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
+        <spring.verion>6.2.8</spring.verion>
     </properties>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.verion}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.verion}</version>
+                <scope>compile</scope>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-aop</artifactId>
