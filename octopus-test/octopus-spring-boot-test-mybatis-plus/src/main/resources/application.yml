@@ -27,6 +27,7 @@ octopus:
 
       - field-name: createTime
         field-type: java.time.LocalDateTime
-
+        mode: INSERT
       - field-name: updateTime
         field-type: java.time.LocalDateTime
+        mode: BOTH
