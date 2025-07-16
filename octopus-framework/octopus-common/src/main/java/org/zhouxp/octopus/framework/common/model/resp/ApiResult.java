@@ -44,6 +44,9 @@ public class ApiResult<T> {
         this.data = data;
     }
 
+    public boolean isOk(){
+       return CommonResponseEnum.SUCCESS.getCode().equals( code);
+    }
     // ========== Success Methods ==========
 
     public static <T> ApiResult<T> ok() {
