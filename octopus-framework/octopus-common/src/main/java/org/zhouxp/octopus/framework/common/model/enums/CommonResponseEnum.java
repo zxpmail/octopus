@@ -31,6 +31,7 @@ public enum CommonResponseEnum implements ICommonResponse {
      */
     ERROR(500, "操作失败"),
 
+    SERVER_NOT_AVAILABLE(501, "没有可用的服务"),
     ;
 
     private static final Map<Integer, String> MAP;
