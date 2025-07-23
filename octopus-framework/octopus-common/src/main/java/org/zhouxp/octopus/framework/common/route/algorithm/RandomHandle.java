@@ -1,4 +1,4 @@
-package org.zhouxp.octopus.framework.common.route.algorithm.random;
+package org.zhouxp.octopus.framework.common.route.algorithm;
 
 import org.zhouxp.octopus.framework.common.exception.BaseException;
 import org.zhouxp.octopus.framework.common.model.enums.CommonResponseEnum;
@@ -17,13 +17,13 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class RandomHandle implements RouteHandle {
     @Override
-    public String routeServer(List<String> values, String key) {
-        if (values == null || values.isEmpty()) {
+    public String routeServer(List<String> servers) {
+        if (servers == null || servers.isEmpty()) {
             throw new BaseException(CommonResponseEnum.SERVER_NOT_AVAILABLE);
         }
         
-        int size = values.size();
+        int size = servers.size();
         int i = ThreadLocalRandom.current().nextInt(size);
-        return values.get(i);
+        return servers.get(i);
     }
 }

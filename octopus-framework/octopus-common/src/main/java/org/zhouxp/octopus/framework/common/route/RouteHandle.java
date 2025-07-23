@@ -11,5 +11,5 @@ import java.util.List;
  * @author zhouxp
  */
 public interface RouteHandle {
-    String routeServer(List<String> values, String key);
+    String routeServer(List<String> servers);
 }
