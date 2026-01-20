@@ -10,11 +10,11 @@
     <properties>
         <revision>3.0.0</revision>
         <java.version>21</java.version>
-        <spring.boot.version>3.5.3</spring.boot.version>
+        <spring.boot.version>3.5.9</spring.boot.version>
         <lombok.version>1.18.38</lombok.version>
         <octopus.version>${revision}</octopus.version>
-        <mybatis-plus.version>3.5.12</mybatis-plus.version>
-        <spring.verion>6.2.8</spring.verion>
+        <mybatis-plus.version>3.5.16</mybatis-plus.version>
+        <spring.verion>6.2.15</spring.verion>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -53,6 +53,11 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-jsqlparser</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
             <dependency>

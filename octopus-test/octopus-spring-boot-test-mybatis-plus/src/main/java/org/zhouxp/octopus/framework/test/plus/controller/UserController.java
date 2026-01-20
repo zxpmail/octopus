@@ -46,7 +46,7 @@ public class UserController {
     @GetMapping("/getOne")
     public User getOne(){
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.last(" LIMIT 1 ");
+        queryWrapper.eq("username","z1");
         return userService.getOne( queryWrapper);
     }
 

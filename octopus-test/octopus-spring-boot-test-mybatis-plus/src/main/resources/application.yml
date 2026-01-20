@@ -31,3 +31,6 @@ octopus:
       - field-name: updateTime
         field-type: java.time.LocalDateTime
         mode: BOTH
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
