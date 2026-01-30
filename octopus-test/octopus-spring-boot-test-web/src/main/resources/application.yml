@@ -1,0 +1,12 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  mvc:
+    path-match:
+      matching-strategy: ant_path_matcher
+knife4j: # knife4j的增强配置，不需要增强可以不配
+  enable: false    # 开启knife4j,无需添加@EnableKnife4j注解
+  setting:
+    language: zh_cn   #中文
+
+

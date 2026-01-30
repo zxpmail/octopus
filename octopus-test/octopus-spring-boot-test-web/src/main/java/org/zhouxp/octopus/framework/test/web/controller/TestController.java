@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zhouxp.octopus.framework.test.web.model.User;
-import org.zhouxp.octopus.framework.web.annotations.NoApiResult;
 
 /**
  * <p/>
@@ -30,13 +29,13 @@ public class TestController {
     }
 
     @GetMapping("/hello1")
-    @NoApiResult
+    //@NoApiResult
     public String hello1() {
         return "hello world";
     }
 
     @GetMapping("/hello2")
-    @NoApiResult
+    //@NoApiResult
     public void hello2() {
         System.out.println("hello world");
     }
