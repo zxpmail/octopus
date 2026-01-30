@@ -8,7 +8,6 @@
     </parent>
     <artifactId>octopus-spring-boot-test-mybatis-plus</artifactId>
     <name>octopus-spring-boot-test-mybatis-plus</name>
-    <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
             <groupId>org.zhouxp.octopus</groupId>
@@ -17,7 +16,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>9.2.0</version>
+            <version>9.5.0</version>
         </dependency>
 
     </dependencies>

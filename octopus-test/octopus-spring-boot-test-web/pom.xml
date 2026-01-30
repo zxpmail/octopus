@@ -8,7 +8,6 @@
     </parent>
     <artifactId>octopus-spring-boot-test-web</artifactId>
     <name>octopus-spring-boot-test-web</name>
-    <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
             <groupId>org.zhouxp.octopus</groupId>

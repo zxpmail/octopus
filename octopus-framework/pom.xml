@@ -4,7 +4,8 @@
     <parent>
         <groupId>org.zhouxp.octopus</groupId>
         <artifactId>octopus</artifactId>
-        <version>${revision}</version>
+        <version>3.0.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <packaging>pom</packaging>
     <properties>
@@ -19,6 +20,7 @@
         <module>octopus-common</module>
         <module>octopus-spring-boot-starter-web</module>
         <module>octopus-spring-boot-starter-mybatis-plus</module>
+        <module>octopus-spring-boot-starter-knife4j</module>
     </modules>
     <dependencies>
         <dependency>
