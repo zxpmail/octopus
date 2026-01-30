@@ -9,6 +9,7 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.zhouxp.octopus.framework.common.model.resp.ApiResult;
@@ -76,7 +77,7 @@ public class ApiResultWrapperAdvice implements ResponseBodyAdvice<Object> {
     }
 
     @Override
-    public Object beforeBodyWrite(Object body,
+    public Object beforeBodyWrite( @Nullable Object body,
                                   MethodParameter returnType,
                                   MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,

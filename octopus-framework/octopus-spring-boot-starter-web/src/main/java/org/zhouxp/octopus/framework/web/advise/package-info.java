@@ -7,6 +7,8 @@
  * @author zhouxp
  */
 @NonNullApi
+@NonNullFields
 package org.zhouxp.octopus.framework.web.advise;
 
 import org.springframework.lang.NonNullApi;
+import org.springframework.lang.NonNullFields;
