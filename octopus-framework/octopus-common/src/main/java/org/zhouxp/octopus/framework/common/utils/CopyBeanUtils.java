@@ -1,6 +1,5 @@
 package org.zhouxp.octopus.framework.common.utils;
 
-import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -11,7 +10,6 @@ import java.beans.PropertyDescriptor;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * <p/>
@@ -33,6 +31,15 @@ public class CopyBeanUtils<S, T> {
         this.targetSupplier = targetSupplier;
     }
 
+
+    public static <S, T> void fastCopy(S source, T target) {
+        if (ObjectUtils.isEmpty(source)|| ObjectUtils.isEmpty(target)) {
+            return ;
+        }
+
+        String[] nullProperties = getNullPropertyNames(source);
+        BeanUtils.copyProperties(source, target);
+    }
     /**
      * 快速拷贝并忽略 null 字段（静态方法）
      */
@@ -62,7 +69,7 @@ public class CopyBeanUtils<S, T> {
         }
         return source.stream()
                 .map(u -> CopyBeanUtils.fastCopy(u, target))
-                .collect(Collectors.toList());
+                .toList();
     }
     /**
      * 创建 CopyBeanUtils 实例
@@ -140,7 +147,7 @@ public class CopyBeanUtils<S, T> {
                     mapper.accept(copier);
                     return copier.execute();
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -152,41 +159,5 @@ public class CopyBeanUtils<S, T> {
                 .map(PropertyDescriptor::getName)
                 .filter(name -> wrapper.getPropertyValue(name) == null)
                 .toArray(String[]::new);
-    }
-
-    @Data
-    static class User {
-        private String userName;
-        private Integer age;
-        private String emailAddress;
-        private String password;
-    }
-
-    @Data
-    static class UserDTO {
-        private String name;
-        private Integer age;
-        private String email;
-        private String password;
-    }
-    public static void main(String[] args) {
-        User user = new User();
-        user.setUserName("Tom");
-        user.setAge(25);
-        user.setEmailAddress("tom@example.com");
-
-        UserDTO dto = CopyBeanUtils.copy(user, UserDTO::new)
-                .map("userName", "name")
-                .map("emailAddress", "email")
-                .ignore("password")
-                .execute();
-
-        System.out.println(dto);
-
-        List<User> userList = Arrays.asList(user, user);
-        List<UserDTO> dtoList = CopyBeanUtils.copyList(userList, UserDTO::new, copier -> copier.map("userName", "name")
-                .map("emailAddress", "email")
-                .ignore("password"));
-        System.out.println(dtoList);
     }
 }
