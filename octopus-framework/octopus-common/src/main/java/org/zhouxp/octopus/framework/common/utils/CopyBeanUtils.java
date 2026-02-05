@@ -35,7 +35,16 @@ public class CopyBeanUtils<S, T> {
     }
 
     // ==================== 静态快捷方法（推荐日常使用）====================
-
+    /**
+     * 复制单个对象，忽略源对象中为 null 的字段
+     */
+    public static <S, T> void copy(S source, T target) {
+        if (ObjectUtils.isEmpty(source)|| ObjectUtils.isEmpty(target)) {
+            return ;
+        }
+        String[] nullProperties = getNullPropertyNames(source);
+        BeanUtils.copyProperties(source, target, nullProperties);
+    }
     /**
      * 复制单个对象，忽略源对象中为 null 的字段
      */
