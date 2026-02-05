@@ -1,5 +1,6 @@
 package org.zhouxp.octopus.framework.common.utils;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -12,13 +13,15 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * <p/>
- * {@code @description}  : 复制一个bean或bean列表 并返回一个目标bean或列表
- * <b>@create:</b> 2025-07-14 19:01:05
+ * Bean 复制工具类
+ * - 支持单个/批量复制
+ * - 默认忽略源对象中为 null 的字段
+ * - 支持字段别名映射和忽略字段（通过链式调用）
  *
  * @author zhouxp
  */
 @SuppressWarnings("unused")
+@JsonIgnoreType
 public class CopyBeanUtils<S, T> {
 
     private final S source;
@@ -31,94 +34,69 @@ public class CopyBeanUtils<S, T> {
         this.targetSupplier = targetSupplier;
     }
 
+    // ==================== 静态快捷方法（推荐日常使用）====================
 
-    public static <S, T> void fastCopy(S source, T target) {
-        if (ObjectUtils.isEmpty(source)|| ObjectUtils.isEmpty(target)) {
-            return ;
-        }
-
-        String[] nullProperties = getNullPropertyNames(source);
-        BeanUtils.copyProperties(source, target);
-    }
     /**
-     * 快速拷贝并忽略 null 字段（静态方法）
+     * 复制单个对象，忽略源对象中为 null 的字段
      */
-    public static <S, T> T fastCopy(S source, Supplier<T> target) {
+    public static <S, T> T copy(S source, Supplier<T> target) {
         if (ObjectUtils.isEmpty(source)) {
             return null;
         }
-
         T targetObj = target.get();
         String[] nullProperties = getNullPropertyNames(source);
-        BeanUtils.copyProperties(source, targetObj,  nullProperties);
+        BeanUtils.copyProperties(source, targetObj, nullProperties);
         return targetObj;
     }
 
     /**
-     * 从源bean list集合中复制到目标bean List集合中
-     *
-     * @param source 源bean List集合
-     * @param target 目标类型对象
-     * @param <T>    目标类型
-     * @param <S>    源类型
-     * @return 返回目标bean List集合
+     * 批量复制 List，忽略源对象中为 null 的字段
      */
-    public static <T, S> List<T> fastCopyList(List<S> source, Supplier<T> target) {
-        if(CollectionUtils.isEmpty(source)){
-            return new ArrayList<>();
+    public static <S, T> List<T> copyList(List<S> source, Supplier<T> target) {
+        if (CollectionUtils.isEmpty(source)) {
+            return Collections.emptyList();
         }
         return source.stream()
-                .map(u -> CopyBeanUtils.fastCopy(u, target))
+                .map(item -> copy(item, target))
                 .toList();
     }
+
+    // ==================== 链式构建器（用于复杂映射）====================
+
     /**
-     * 创建 CopyBeanUtils 实例
+     * 创建 CopyBeanUtils 实例，用于自定义字段映射或忽略
      */
-    public static <S, T> CopyBeanUtils<S, T> copy(S source, Supplier<T> targetSupplier) {
+    public static <S, T> CopyBeanUtils<S, T> of(S source, Supplier<T> targetSupplier) {
         return new CopyBeanUtils<>(source, targetSupplier);
     }
 
-    /**
-     * 添加字段映射关系
-     */
     public CopyBeanUtils<S, T> map(String sourceField, String targetField) {
         fieldMapping.put(sourceField, targetField);
         return this;
     }
 
-    /**
-     * 添加要忽略的字段
-     */
     public CopyBeanUtils<S, T> ignore(String fieldName) {
         ignoreFields.add(fieldName);
         return this;
     }
 
-    /**
-     * 执行拷贝
-     */
     public T execute() {
         if (ObjectUtils.isEmpty(source)) {
             return null;
         }
 
         T target = targetSupplier.get();
-
-
         String[] nullNamesArray = getNullPropertyNames(source);
-
         Set<String> ignoreNames = new HashSet<>(Arrays.asList(nullNamesArray));
-
         ignoreNames.addAll(ignoreFields);
 
-        // 处理字段别名映射
         BeanWrapper srcWrapper = new BeanWrapperImpl(source);
         BeanWrapper destWrapper = new BeanWrapperImpl(target);
 
+        // 处理字段映射
         for (Map.Entry<String, String> entry : fieldMapping.entrySet()) {
             String sourceName = entry.getKey();
             String targetName = entry.getValue();
-
             if (!ignoreNames.contains(sourceName)) {
                 Object value = srcWrapper.getPropertyValue(sourceName);
                 if (value != null) {
@@ -127,32 +105,30 @@ public class CopyBeanUtils<S, T> {
             }
         }
 
-        // 使用 Spring BeanUtils 拷贝剩余字段
-        BeanUtils.copyProperties(source,target, ignoreNames.toArray(new String[0]));
-
+        // 拷贝其余字段
+        BeanUtils.copyProperties(source, target, ignoreNames.toArray(new String[0]));
         return target;
     }
 
     /**
-     * 批量拷贝 List 对象
+     * 批量复制，支持自定义映射规则
      */
     public static <S, T> List<T> copyList(List<S> sourceList, Supplier<T> targetSupplier, Consumer<CopyBeanUtils<S, T>> mapper) {
-        if (sourceList == null || sourceList.isEmpty()) {
+        if (CollectionUtils.isEmpty(sourceList)) {
             return Collections.emptyList();
         }
-
         return sourceList.stream()
-                .map(s -> {
-                    CopyBeanUtils<S, T> copier = new CopyBeanUtils<>(s, targetSupplier);
-                    mapper.accept(copier);
-                    return copier.execute();
-                })
+                .map(s -> of(s, targetSupplier).apply(mapper).execute())
                 .toList();
     }
 
-    /**
-     * 获取对象中为 null 的字段名
-     */
+    // ==================== 工具方法 ====================
+
+    private CopyBeanUtils<S, T> apply(Consumer<CopyBeanUtils<S, T>> mapper) {
+        mapper.accept(this);
+        return this;
+    }
+
     public static String[] getNullPropertyNames(Object source) {
         BeanWrapper wrapper = new BeanWrapperImpl(source);
         return Arrays.stream(wrapper.getPropertyDescriptors())
